@@ -9,8 +9,16 @@ function init() {
 function setupStartButton() {
   const button = document.getElementById('startButton')
   button?.addEventListener('click', () => {
-    window.electron.ipcRenderer.send('setVideoSource', selectMenu.value)
-    window.electron.ipcRenderer.send('showVideoWindow')
+    if (button.dataset.state == '0') {
+      button.dataset.state = 1
+      button.textContent = 'Stop'
+      window.electron.ipcRenderer.send('setVideoSource', selectMenu.value)
+      window.electron.ipcRenderer.send('showVideoWindow')
+    } else {
+      button.dataset.state = 0
+      button.textContent = 'Start'
+      window.electron.ipcRenderer.send('stopVideo')
+    }
   })
 }
 

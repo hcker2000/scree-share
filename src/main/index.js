@@ -1,8 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain, desktopCapturer, globalShortcut } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, desktopCapturer, globalShortcut, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { uIOhook } from 'uiohook-napi'
+
+// import { settings } from './settings'
 import '../renderer/scss/styles.scss'
 
 function createControlWindow() {
@@ -108,10 +110,13 @@ function createVideoWindow() {
   return window
 }
 
+// TODO: see https://syobochim.medium.com/electron-keep-apps-on-top-whether-in-full-screen-mode-or-on-other-desktops-d7d914579fce
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  // settings.init()
   let mousePosition = 0
 
   uIOhook.start()
@@ -149,8 +154,9 @@ app.whenReady().then(() => {
   ipcMain.on('setQuad', (event, arg) => {
     videoWindow.webContents.send('getQuad', arg)
   })
-  ipcMain.on('hideVideoWindow', () => {
+  ipcMain.on('stopVideo', () => {
     videoWindow.hide()
+    videoWindow.webContents.send('stopVideo')
   })
 
   uIOhook.on('mousemove', (event) => {

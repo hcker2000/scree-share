@@ -22,7 +22,7 @@ async function startVideo() {
   await videoElement.play()
 }
 
-async function stopRecording() {
+async function stopVideo() {
   videoElement.srcObject = null
 }
 
@@ -70,10 +70,14 @@ const paintOnCanvas = () => {
 }
 
 window.electron.ipcRenderer.on('getVideoSource', function (event, arg) {
-  stopRecording()
+  stopVideo()
   videoSource = arg
   startVideo()
   paintOnCanvas()
+})
+
+window.electron.ipcRenderer.on('stopVideo', function () {
+  stopVideo()
 })
 
 window.electron.ipcRenderer.on('getQuad', function (event, arg) {
