@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Electron</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    />
+
+    <link rel="stylesheet" href="./scss/styles.scss">
+  </head>
+
+  <body>
+    <div class="container-fluid py-4 px-3 mx-auto">
+      <div class="row row-cols-1 mb-3">
+        <div class="col">
+          <a id="startButton" target="_blank" rel="noreferrer" class="btn btn-primary d-block">Start</a>
+        </div>
+      </div>
+      <div class="row row-cols-2 gy-4 mb-3">
+        <div class="col">
+          <a id="tl" target="_blank" rel="noreferrer" class="btn btn-primary d-block">Top Left</a>
+        </div>
+        <div class="col">
+          <a id="bl" target="_blank" rel="noreferrer" class="btn btn-primary d-block">Bottom Left</a>
+        </div>
+        <div class="col">
+          <a id="tr" target="_blank" rel="noreferrer" class="btn btn-primary d-block">Top Right</a>
+        </div>
+        <div class="col">
+          <a id="br" target="_blank" rel="noreferrer" class="btn btn-primary d-block">Bottom Right</a>
+        </div>
+      </div>
+
+      <div class="card text-center">
+        <div class="card-header">
+          Settings
+        </div>
+        <div class="card-body">
+          <select id="selectMenu" class="d-none"></select>
+          <form>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+              <label class="form-check-label" for="exampleCheck1">Follow Mouse</label>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+              <label class="form-check-label" for="exampleCheck1">Show Region Borders</label>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./src/renderer.js"></script>
+  </body>
+</html>
