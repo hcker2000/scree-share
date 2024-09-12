@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { uIOhook } from 'uiohook-napi'
 
-// import { settings } from './settings'
+import { init as initSettings } from './settings'
 import '../renderer/scss/styles.scss'
 
 function createControlWindow() {
@@ -19,7 +19,8 @@ function createControlWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   })
 
@@ -59,7 +60,8 @@ function createVideoWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   })
 
@@ -116,8 +118,11 @@ function createVideoWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  // settings.init()
+  initSettings()
   let mousePosition = 0
+  let settings = {
+    mouseFollow: false
+  }
 
   uIOhook.start()
   // Set app user model id for windows
@@ -158,10 +163,16 @@ app.whenReady().then(() => {
     videoWindow.hide()
     videoWindow.webContents.send('stopVideo')
   })
+  ipcMain.on('changeSetting', (event, arg) => {
+    settings[arg.setting] = arg.value
+  })
 
   uIOhook.on('mousemove', (event) => {
     mousePosition = event
-    // videoWindow.webContents.send('getMousePosition', mousePosition)
+
+    if (settings.mouseFollow == true) {
+      videoWindow.webContents.send('getMousePosition', mousePosition)
+    }
   })
 
   globalShortcut.register('Alt+CommandOrControl+R', () => {
