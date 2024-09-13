@@ -24,10 +24,6 @@ function createControlWindow() {
     }
   })
 
-  window.on('ready-to-show', () => {
-    // controlWindow.show()
-  })
-
   window.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
@@ -62,7 +58,6 @@ function createVideoWindow() {
   })
 
   window.on('ready-to-show', () => {
-    // mainWindow.show()
     window.webContents.send('resizeWindow', window.getSize())
   })
 
@@ -80,7 +75,7 @@ function createVideoWindow() {
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     window.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/video.html`)
   } else {
-    window.loadFile(join(__dirname, '../../src/renderer/video.html'))
+    window.loadFile(join(__dirname, '../renderer/video.html'))
   }
   return window
 }
@@ -117,7 +112,7 @@ function createIndicatorWindow() {
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     window.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/indicator.html`)
   } else {
-    window.loadFile(join(__dirname, '../../src/renderer/indicator.html'))
+    window.loadFile(join(__dirname, '../renderer/indicator.html'))
   }
   return window
 }
