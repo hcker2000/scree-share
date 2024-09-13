@@ -36,7 +36,7 @@ function createControlWindow() {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    window.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    window.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/index.html`)
   } else {
     window.loadFile(join(__dirname, '../renderer/index.html'))
   }
@@ -78,7 +78,7 @@ function createVideoWindow() {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    window.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    window.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/video.html`)
   } else {
     window.loadFile(join(__dirname, '../../src/renderer/video.html'))
   }
@@ -115,7 +115,7 @@ function createIndicatorWindow() {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    window.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    window.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/indicator.html`)
   } else {
     window.loadFile(join(__dirname, '../../src/renderer/indicator.html'))
   }
