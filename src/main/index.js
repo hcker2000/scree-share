@@ -1,10 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain, desktopCapturer, globalShortcut, screen } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, desktopCapturer, globalShortcut } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { uIOhook } from 'uiohook-napi'
 
-import { init as initSettings } from './settings'
+// import { init as initSettings } from './settings'
 import '../renderer/scss/styles.scss'
 
 function createControlWindow() {
@@ -45,10 +45,6 @@ function createControlWindow() {
 }
 
 function createVideoWindow() {
-  let isDragging = false
-  let initialMousePosition = null
-  let initialWindowPosition = null
-
   const window = new BrowserWindow({
     width: 900,
     height: 670,
@@ -74,29 +70,6 @@ function createVideoWindow() {
     window.webContents.send('resizeWindow', window.getSize())
   })
 
-  window.on('mousedown', (event) => {
-    if (event.button === 0) {
-      // Left mouse button
-      isDragging = true
-      initialMousePosition = { x: event.x, y: event.y }
-      initialWindowPosition = { x: window.getPosition()[0], y: window.getPosition()[1] }
-    }
-  })
-
-  window.on('mousemove', (event) => {
-    if (isDragging) {
-      const deltaX = event.x - initialMousePosition.x
-      const deltaY = event.y - initialMousePosition.y
-      const newX = initialWindowPosition.x + deltaX
-      const newY = initialWindowPosition.y + deltaY
-      window.setPosition(newX, newY)
-    }
-  })
-
-  window.on('mouseup', () => {
-    isDragging = false
-  })
-
   window.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'allow' }
@@ -113,15 +86,51 @@ function createVideoWindow() {
 }
 
 // TODO: see https://syobochim.medium.com/electron-keep-apps-on-top-whether-in-full-screen-mode-or-on-other-desktops-d7d914579fce
+function createIndicatorWindow() {
+  const window = new BrowserWindow({
+    width: 30,
+    height: 30,
+    show: false,
+    frame: false,
+    resizable: false,
+    autoHideMenuBar: true,
+    ...(process.platform === 'linux' ? { icon } : {}),
+    webPreferences: {
+      // preload: join(__dirname, '../preload/index.js'),
+      sandbox: false,
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    }
+  })
+
+  window.setAlwaysOnTop(true, 'screen-saver')
+  window.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})
+
+  window.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url)
+    return { action: 'allow' }
+  })
+
+  // HMR for renderer base on electron-vite cli.
+  // Load the remote URL for development or the local html file for production.
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    window.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  } else {
+    window.loadFile(join(__dirname, '../../src/renderer/indicator.html'))
+  }
+  return window
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  initSettings()
+  // initSettings()
   let mousePosition = 0
   let settings = {
-    mouseFollow: false
+    mouseFollow: false,
+    showRegion: false
   }
 
   uIOhook.start()
@@ -142,16 +151,19 @@ app.whenReady().then(() => {
   })
 
   let controlWindow = createControlWindow()
+  let indicatorWindow = createIndicatorWindow()
   let videoWindow = createVideoWindow()
 
   controlWindow.show()
 
   controlWindow.on('close', () => {
     videoWindow.close()
+    indicatorWindow.close()
   })
 
   ipcMain.on('showVideoWindow', () => {
     videoWindow.show()
+    // indicatorWindow.show()
   })
   ipcMain.on('setVideoSource', (event, arg) => {
     videoWindow.webContents.send('getVideoSource', arg)
@@ -160,11 +172,23 @@ app.whenReady().then(() => {
     videoWindow.webContents.send('getQuad', arg)
   })
   ipcMain.on('stopVideo', () => {
+    // indicatorWindow.hide()
     videoWindow.hide()
     videoWindow.webContents.send('stopVideo')
   })
+  ipcMain.on('setIndicatorPosition', (event, arg) => {
+    indicatorWindow.setPosition(...arg)
+  })
   ipcMain.on('changeSetting', (event, arg) => {
     settings[arg.setting] = arg.value
+
+    if (arg.setting == 'showRegion') {
+      if (arg.value == true) {
+        indicatorWindow.show()
+      } else {
+        indicatorWindow.hide()
+      }
+    }
   })
 
   uIOhook.on('mousemove', (event) => {

@@ -1,7 +1,7 @@
 let videoSource
 let videoElement
 let canvasElement
-let quad = '11'
+let quad = '00'
 
 async function startVideo() {
   const constraints = {
@@ -43,9 +43,9 @@ const paintOnCanvas = () => {
 
     if (quad.toString() == '01') {
       srcX = 0
-      srcY = canvasElement.height
+      srcY = videoElement.videoHeight / 2
     } else if (quad.toString() == '10') {
-      srcX = canvasElement.width
+      srcX = videoElement.videoWidth / 2
       srcY = 0
     } else if (quad.toString() == '11') {
       srcX = videoElement.videoWidth / 2
@@ -64,6 +64,7 @@ const paintOnCanvas = () => {
       videoElement.videoHeight
     )
 
+    window.electron.ipcRenderer.send('setIndicatorPosition', [srcX, srcY])
     myTimeout = setTimeout(draw, 1000 / FPS)
   }
   myTimeout = setTimeout(draw, 1000 / FPS)

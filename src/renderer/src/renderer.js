@@ -15,6 +15,18 @@ function init() {
         value: value
       })
     })
+
+    const showRegionInput = document.getElementById('showRegion')
+    showRegionInput?.addEventListener('click', (event) => {
+      let value = false
+      if (event.target.checked) {
+        value = true
+      }
+      window.electron.ipcRenderer.send('changeSetting', {
+        setting: 'showRegion',
+        value: value
+      })
+    })
   })
 }
 
