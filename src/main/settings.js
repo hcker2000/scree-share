@@ -17,3 +17,19 @@ export function getWindowLocation() {
 export function setWindowLocation(cords) {
   store.set('settings.window.location', cords)
 }
+
+export function getFollowMouse() {
+  const defaultReturn = ''
+  const theSetting = store.get('settings.followMouse')
+
+  if (theSetting) {
+    return theSetting
+  } else {
+    store.set('settings.followMouse', defaultReturn)
+    return defaultReturn
+  }
+}
+
+export function setFollowMouse(value) {
+  store.set('settings.followMouse', value)
+}

@@ -1,19 +1,18 @@
 function init() {
+  let followMouseInput
+
+  window.electron.ipcRenderer.on('getFollowMouse', (event, arg) => {
+    followMouseInput.checked = arg
+  })
+
   window.addEventListener('DOMContentLoaded', () => {
     getVideoSources()
     setupStartButton()
     setupQuadButtons()
 
-    const followMouseInput = document.getElementById('followMouse')
+    followMouseInput = document.getElementById('followMouse')
     followMouseInput?.addEventListener('click', (event) => {
-      let value = false
-      if (event.target.checked) {
-        value = true
-      }
-      window.electron.ipcRenderer.send('changeSetting', {
-        setting: 'mouseFollow',
-        value: value
-      })
+      window.electron.ipcRenderer.send('setFollowMouse', event.target.checked)
     })
 
     const showRegionInput = document.getElementById('showRegion')

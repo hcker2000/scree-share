@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { uIOhook } from 'uiohook-napi'
-import { getWindowLocation, setWindowLocation } from './settings'
+import { getWindowLocation, setWindowLocation, setFollowMouse, getFollowMouse } from './settings'
 
 // import { init as initSettings } from './settings'
 import '../renderer/scss/styles.scss'
@@ -26,6 +26,10 @@ function createControlWindow() {
       contextIsolation: false,
       enableRemoteModule: true
     }
+  })
+
+  window.webContents.on('dom-ready', () => {
+    window.webContents.send('getFollowMouse', getFollowMouse())
   })
 
   window.webContents.setWindowOpenHandler((details) => {
@@ -128,7 +132,7 @@ app.whenReady().then(() => {
   // initSettings()
   let mousePosition = 0
   let settings = {
-    mouseFollow: false,
+    followMouse: getFollowMouse(),
     showRegion: false
   }
 
@@ -190,11 +194,15 @@ app.whenReady().then(() => {
       }
     }
   })
+  ipcMain.on('setFollowMouse', (event, arg) => {
+    settings.followMouse = arg
+    setFollowMouse(arg)
+  })
 
   uIOhook.on('mousemove', (event) => {
     mousePosition = event
 
-    if (settings.mouseFollow == true) {
+    if (settings.followMouse == true) {
       videoWindow.webContents.send('getMousePosition', mousePosition)
     }
   })
