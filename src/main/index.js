@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { uIOhook } from 'uiohook-napi'
-import { getWindowLocation, setWindowLocation, setFollowMouse, getFollowMouse } from './settings'
+import { getWindowLocation, setWindowLocation, setFollowMouse, getFollowMouse, getShowRegion, setShowRegion } from './settings'
 
 // import { init as initSettings } from './settings'
 import '../renderer/scss/styles.scss'
@@ -30,6 +30,7 @@ function createControlWindow() {
 
   window.webContents.on('dom-ready', () => {
     window.webContents.send('getFollowMouse', getFollowMouse())
+    window.webContents.send('getShowRegion', getShowRegion())
   })
 
   window.webContents.setWindowOpenHandler((details) => {
@@ -133,7 +134,7 @@ app.whenReady().then(() => {
   let mousePosition = 0
   let settings = {
     followMouse: getFollowMouse(),
-    showRegion: false
+    showRegion: getShowRegion()
   }
 
   uIOhook.start()
@@ -183,20 +184,18 @@ app.whenReady().then(() => {
   ipcMain.on('setIndicatorPosition', (event, arg) => {
     indicatorWindow.setPosition(...arg)
   })
-  ipcMain.on('changeSetting', (event, arg) => {
-    settings[arg.setting] = arg.value
-
-    if (arg.setting == 'showRegion') {
-      if (arg.value == true) {
-        indicatorWindow.show()
-      } else {
-        indicatorWindow.hide()
-      }
-    }
-  })
   ipcMain.on('setFollowMouse', (event, arg) => {
     settings.followMouse = arg
     setFollowMouse(arg)
+  })
+  ipcMain.on('setShowRegion', (event, arg) => {
+    settings.showRegion = arg
+    setShowRegion(arg)
+    if (arg == true) {
+      indicatorWindow.show()
+    } else {
+      indicatorWindow.hide()
+    }
   })
 
   uIOhook.on('mousemove', (event) => {

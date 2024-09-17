@@ -33,3 +33,19 @@ export function getFollowMouse() {
 export function setFollowMouse(value) {
   store.set('settings.followMouse', value)
 }
+
+export function getShowRegion() {
+  const defaultReturn = ''
+  const theSetting = store.get('settings.showRegion')
+
+  if (theSetting) {
+    return theSetting
+  } else {
+    store.set('settings.showRegion', defaultReturn)
+    return defaultReturn
+  }
+}
+
+export function setShowRegion(value) {
+  store.set('settings.showRegion', value)
+}

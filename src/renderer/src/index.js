@@ -1,8 +1,13 @@
 function init() {
   let followMouseInput
+  let showRegionInput
 
   window.electron.ipcRenderer.on('getFollowMouse', (event, arg) => {
     followMouseInput.checked = arg
+  })
+
+  window.electron.ipcRenderer.on('getShowRegion', (event, arg) => {
+    showRegionInput.checked = arg
   })
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -15,16 +20,9 @@ function init() {
       window.electron.ipcRenderer.send('setFollowMouse', event.target.checked)
     })
 
-    const showRegionInput = document.getElementById('showRegion')
+    showRegionInput = document.getElementById('showRegion')
     showRegionInput?.addEventListener('click', (event) => {
-      let value = false
-      if (event.target.checked) {
-        value = true
-      }
-      window.electron.ipcRenderer.send('changeSetting', {
-        setting: 'showRegion',
-        value: value
-      })
+      window.electron.ipcRenderer.send('setShowRegion', event.target.checked)
     })
   })
 }
