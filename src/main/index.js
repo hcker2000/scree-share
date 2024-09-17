@@ -3,7 +3,14 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { uIOhook } from 'uiohook-napi'
-import { getWindowLocation, setWindowLocation, setFollowMouse, getFollowMouse, getShowRegion, setShowRegion } from './settings'
+import {
+  getWindowLocation,
+  setWindowLocation,
+  setFollowMouse,
+  getFollowMouse,
+  getShowRegion,
+  setShowRegion
+} from './settings'
 
 // import { init as initSettings } from './settings'
 import '../renderer/scss/styles.scss'
