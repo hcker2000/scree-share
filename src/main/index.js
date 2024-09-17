@@ -168,7 +168,11 @@ app.whenReady().then(() => {
 
   ipcMain.on('showVideoWindow', () => {
     videoWindow.show()
-    // indicatorWindow.show()
+    if (settings.showRegion == true) {
+      indicatorWindow.show()
+    } else {
+      indicatorWindow.hide()
+    }
   })
   ipcMain.on('setVideoSource', (event, arg) => {
     videoWindow.webContents.send('getVideoSource', arg)
@@ -177,7 +181,7 @@ app.whenReady().then(() => {
     videoWindow.webContents.send('getQuad', arg)
   })
   ipcMain.on('stopVideo', () => {
-    // indicatorWindow.hide()
+    indicatorWindow.hide()
     videoWindow.hide()
     videoWindow.webContents.send('stopVideo')
   })
@@ -191,11 +195,6 @@ app.whenReady().then(() => {
   ipcMain.on('setShowRegion', (event, arg) => {
     settings.showRegion = arg
     setShowRegion(arg)
-    if (arg == true) {
-      indicatorWindow.show()
-    } else {
-      indicatorWindow.hide()
-    }
   })
 
   uIOhook.on('mousemove', (event) => {
