@@ -213,6 +213,7 @@ app.whenReady().then(() => {
   })
 
   globalShortcut.register('Alt+CommandOrControl+R', () => {
+    debugger
     videoWindow.webContents.send('getMousePosition', mousePosition)
   })
   globalShortcut.register('Alt+CommandOrControl+F', () => {
@@ -221,11 +222,10 @@ app.whenReady().then(() => {
       setFollowMouse(false)
       controlWindow.webContents.send('getFollowMouse', false)
       return
-    } else {
-      settings.followMouse = true
-      setFollowMouse(true)
-      controlWindow.webContents.send('getFollowMouse', true)
     }
+    settings.followMouse = true
+    setFollowMouse(true)
+    controlWindow.webContents.send('getFollowMouse', true)
   })
 })
 
