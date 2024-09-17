@@ -215,6 +215,18 @@ app.whenReady().then(() => {
   globalShortcut.register('Alt+CommandOrControl+R', () => {
     videoWindow.webContents.send('getMousePosition', mousePosition)
   })
+  globalShortcut.register('Alt+CommandOrControl+F', () => {
+    if (settings.followMouse == true) {
+      settings.followMouse = false
+      setFollowMouse(false)
+      controlWindow.webContents.send('getFollowMouse', false)
+      return
+    } else {
+      settings.followMouse = true
+      setFollowMouse(true)
+      controlWindow.webContents.send('getFollowMouse', true)
+    }
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
