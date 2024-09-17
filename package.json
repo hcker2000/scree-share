@@ -2,7 +2,7 @@
   "name": "scree-share",
   "version": "1.0.0",
   "description": "Share a region of your high resolution screen",
-  "main": "./out/main/index.js",
+  "main": "./out/main/index.mjs",
   "author": "Mike Ashcraft",
   "homepage": "https://github.com/hcker2000/scree-share",
   "scripts": {
@@ -24,6 +24,7 @@
     "bootstrap": "5.3.3",
     "electron-json-storage": "^4.6.0",
     "electron-settings": "^4.0.4",
+    "electron-store": "^10.0.0",
     "uiohook-napi": "^1.5.4"
   },
   "devDependencies": {

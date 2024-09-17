@@ -3,12 +3,16 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { uIOhook } from 'uiohook-napi'
+import { getWindowLocation, setWindowLocation } from './settings'
 
 // import { init as initSettings } from './settings'
 import '../renderer/scss/styles.scss'
 
 function createControlWindow() {
+  const windowLocation = getWindowLocation()
   const window = new BrowserWindow({
+    x: windowLocation[0],
+    y: windowLocation[1],
     width: 400,
     height: 400,
     show: false,
@@ -100,7 +104,7 @@ function createIndicatorWindow() {
   })
 
   window.setAlwaysOnTop(true, 'screen-saver')
-  window.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})
+  window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
   window.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -154,6 +158,7 @@ app.whenReady().then(() => {
   controlWindow.on('close', () => {
     videoWindow.close()
     indicatorWindow.close()
+    setWindowLocation(controlWindow.getPosition())
   })
 
   ipcMain.on('showVideoWindow', () => {
