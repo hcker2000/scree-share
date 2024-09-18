@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html data-bs-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <title>Scree Share</title>
@@ -20,7 +20,7 @@
             id="startButton"
             target="_blank"
             rel="noreferrer"
-            class="btn btn-primary d-block"
+            class="btn btn-success d-block"
             data-state="0"
             >Start</a
           >
@@ -49,14 +49,18 @@
         <div class="card-header">Settings</div>
         <div class="card-body">
           <select id="selectMenu" class="d-none"></select>
-          <form>
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="followMouse" />
+          <form class="text-start">
+            <div class="mb-3 form-check form-switch">
+              <input type="checkbox" class="form-check-input" role="switch" id="followMouse" />
               <label class="form-check-label" for="followMouse">Follow Mouse</label>
             </div>
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="showRegion" />
+            <div class="mb-3 form-check form-switch">
+              <input type="checkbox" class="form-check-input" role="switch" id="showRegion" />
               <label class="form-check-label" for="showRegion">Show Region Indicator</label>
+            </div>
+            <div class="mb-3 form-check form-switch">
+              <input type="checkbox" class="form-check-input" role="switch" id="darkMode" />
+              <label class="form-check-label" for="darkMode">Dark Mode</label>
             </div>
           </form>
         </div>

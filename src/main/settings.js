@@ -49,3 +49,19 @@ export function getShowRegion() {
 export function setShowRegion(value) {
   store.set('settings.showRegion', value)
 }
+
+export function getDarkMode() {
+  const defaultReturn = ''
+  const theSetting = store.get('settings.darkMode')
+
+  if (theSetting) {
+    return theSetting
+  } else {
+    store.set('settings.darkMode', defaultReturn)
+    return defaultReturn
+  }
+}
+
+export function setDarkMode(value) {
+  store.set('settings.darkMode', value)
+}

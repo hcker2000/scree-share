@@ -1,6 +1,16 @@
 function init() {
+  const toggleDarkMode = (value) => {
+    const htmlElemenet = document.documentElement
+    if (value == true) {
+      htmlElemenet.setAttribute('data-bs-theme', 'dark')
+    } else {
+      htmlElemenet.setAttribute('data-bs-theme', 'light')
+    }
+  }
+
   let followMouseInput
   let showRegionInput
+  let darkModeInput
 
   window.electron.ipcRenderer.on('getFollowMouse', (event, arg) => {
     followMouseInput.checked = arg
@@ -8,6 +18,11 @@ function init() {
 
   window.electron.ipcRenderer.on('getShowRegion', (event, arg) => {
     showRegionInput.checked = arg
+  })
+
+  window.electron.ipcRenderer.on('getDarkMode', (event, arg) => {
+    darkModeInput.checked = arg
+    toggleDarkMode(arg)
   })
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -24,6 +39,12 @@ function init() {
     showRegionInput?.addEventListener('click', (event) => {
       window.electron.ipcRenderer.send('setShowRegion', event.target.checked)
     })
+
+    darkModeInput = document.getElementById('darkMode')
+    darkModeInput?.addEventListener('click', (event) => {
+      window.electron.ipcRenderer.send('setDarkMode', event.target.checked)
+      toggleDarkMode(event.target.checked)
+    })
   })
 }
 
@@ -33,11 +54,15 @@ function setupStartButton() {
     if (button.dataset.state == '0') {
       button.dataset.state = 1
       button.textContent = 'Stop'
+      button.classList.remove('btn-success')
+      button.classList.add('btn-danger')
       window.electron.ipcRenderer.send('setVideoSource', selectMenu.value)
       window.electron.ipcRenderer.send('showVideoWindow')
     } else {
       button.dataset.state = 0
       button.textContent = 'Start'
+      button.classList.remove('btn-danger')
+      button.classList.add('btn-success')
       window.electron.ipcRenderer.send('stopVideo')
     }
   })

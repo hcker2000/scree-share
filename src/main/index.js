@@ -9,7 +9,9 @@ import {
   setFollowMouse,
   getFollowMouse,
   getShowRegion,
-  setShowRegion
+  setShowRegion,
+  getDarkMode,
+  setDarkMode
 } from './settings'
 
 // import { init as initSettings } from './settings'
@@ -21,7 +23,7 @@ function createControlWindow() {
     x: windowLocation[0],
     y: windowLocation[1],
     width: 400,
-    height: 400,
+    height: 415,
     show: false,
     resizable: false,
     autoHideMenuBar: true,
@@ -38,6 +40,7 @@ function createControlWindow() {
   window.webContents.on('dom-ready', () => {
     window.webContents.send('getFollowMouse', getFollowMouse())
     window.webContents.send('getShowRegion', getShowRegion())
+    window.webContents.send('getDarkMode', getDarkMode())
   })
 
   window.webContents.setWindowOpenHandler((details) => {
@@ -141,7 +144,8 @@ app.whenReady().then(() => {
   let mousePosition = 0
   let settings = {
     followMouse: getFollowMouse(),
-    showRegion: getShowRegion()
+    showRegion: getShowRegion(),
+    darkMode: getDarkMode()
   }
 
   uIOhook.start()
@@ -203,6 +207,10 @@ app.whenReady().then(() => {
     settings.showRegion = arg
     setShowRegion(arg)
   })
+  ipcMain.on('setDarkMode', (event, arg) => {
+    settings.darkMode = arg
+    setDarkMode(arg)
+  })
 
   uIOhook.on('mousemove', (event) => {
     mousePosition = event
@@ -213,7 +221,6 @@ app.whenReady().then(() => {
   })
 
   globalShortcut.register('Alt+CommandOrControl+R', () => {
-    debugger
     videoWindow.webContents.send('getMousePosition', mousePosition)
   })
   globalShortcut.register('Alt+CommandOrControl+F', () => {
