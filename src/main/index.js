@@ -76,6 +76,8 @@ function createVideoWindow() {
     }
   })
 
+  window.setFocusable(false)
+
   window.on('ready-to-show', () => {
     window.webContents.send('resizeWindow', window.getSize())
   })
